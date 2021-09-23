@@ -1,9 +1,7 @@
-import dotenv from "dotenv";
-import {accountAssetInformation} from './services/tokocryptoService'
+import { buyCoinJob } from "./services/dcaService"
 
 const main = async() => {
-    dotenv.config()
-    accountAssetInformation()
+    buyCoinJob()
 }
 
 main()

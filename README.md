@@ -4,7 +4,8 @@ Help me to buy coin daily while I'm sleeping or watching BoJack
 
 ## TODO
 - [X] Set up API signed header
-- [ ] Order API
+- [X] Order API
+- [X] DCA Order
 - [ ] Scheduler (Agenda.js)
 - [ ] Save Transaction in DB
 - [ ] Report Transaction (via telegram)
