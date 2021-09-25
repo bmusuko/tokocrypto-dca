@@ -1,7 +1,7 @@
 import axios from "axios"
 import dotenv from "dotenv";
 import crypto from "crypto"
-import { OrderSide, OrderTypes } from "../types/TokocryptoTypes";
+import {OrderBuyReturn, OrderSide, OrderTypes} from "../types/TokocryptoTypes";
 
 dotenv.config()
 
@@ -33,7 +33,7 @@ const accountAssetInformation = async () => {
     }
 }
 
-const newOrderBuy  = async (symbol: string, quantity: number) => {
+const newOrderBuy  = async (symbol: string, quantity: number): Promise<OrderBuyReturn | null> => {
     const API_URL = `${TOKOCRYPTO_API_BASE_URL}/open/v1/orders`
     const params = new URLSearchParams({
         symbol: symbol,
@@ -49,22 +49,36 @@ const newOrderBuy  = async (symbol: string, quantity: number) => {
 
     try {
         const res = await axios.post(`${API_URL}?${querystring}`)
-        console.log(res.data)
-        /** return example
-        {
-            code: 0,
-            msg: 'Success',
-            data: { orderId: 45114802, createTime: 1632405772814 },
-            timestamp: 1632405772955
-        }
-         */
+        return res.data as OrderBuyReturn
     } catch (e) {
         console.log(e.message)
+        return null
     }
+}
 
+const getOrderBuy  = async (symbol: string) => {
+    const API_URL = `${TOKOCRYPTO_API_BASE_URL}/open/v1/orders`
+    const params = new URLSearchParams({
+        symbol: symbol,
+        side: OrderSide.BUY,
+        timestamp: (new Date().getTime()).toString(),
+        recvWindow: receiveWindow
+    }).toString()
+
+    const signature = crypto.createHmac("sha256", process.env.PRIVATE_KEY as string).update(params).digest("hex")
+    const querystring = `${params.toString()}&signature=${signature}`
+
+    try {
+        const res = await axios.get(`${API_URL}?${querystring}`)
+        return res.data
+    } catch (e) {
+        console.log(e.message)
+        return null
+    }
 }
 
 export {
     accountAssetInformation,
-    newOrderBuy
+    newOrderBuy,
+    getOrderBuy
 }

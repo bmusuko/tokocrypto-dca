@@ -1,27 +1,13 @@
 version: "3.8"
 services:
-  mongodb:
-    image : mongo
-    container_name: mongodb
-    networks:
-      default:
-        aliases:
-          - "mongodb.local"
-    volumes:
-      - ./mongo_database:/data/db
-    restart: unless-stopped
-    ports:
-      - 27017:27017
-
   buy-coin-service:
     build: .
     container_name: buy_coin_service
     env_file: .env
-    depends_on:
-      - mongodb
     environment:
       API_KEY: ${API_KEY}
       PRIVATE_KEY: ${PRIVATE_KEY}
       COINS: ${COINS}
       STABLE_COIN: ${STABLE_COIN}
       DAILY_AMOUNT: ${DAILY_AMOUNT}
+      MONGODB_URL: ${MONGODB_URL}

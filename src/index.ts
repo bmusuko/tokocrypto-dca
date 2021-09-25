@@ -1,7 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config()
+
 import { Agenda } from "agenda";
 import { buyCoinJob } from "./services/dcaService"
+import { DBConnection } from './db/prisma'
 
-const mongoConnectionString = `mongodb://mongodb.local/agenda`;
+const mongoConnectionString = process.env.MONGODB_URL as string;
 const BUY_COIN_JOB = "buy coin everyday"
 const agenda = new Agenda(
     {
@@ -15,8 +19,9 @@ agenda.define(BUY_COIN_JOB,
 });
 
 const main = async() => {
+    await DBConnection.init()
     await agenda.start();
-    await agenda.every('0 8 * * *', BUY_COIN_JOB);
+    await agenda.every('0 */6 * * *', BUY_COIN_JOB);
 }
 
 main().then(() => console.log("start service"))

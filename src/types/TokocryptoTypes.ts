@@ -13,4 +13,14 @@ enum OrderSide {
     SELL = "1" 
 }
 
-export {OrderTypes, OrderSide}
+interface OrderBuyReturn {
+    code: Number,
+    msg: string,
+    data: {
+        orderId: number,
+        createTime: number
+    },
+    timestamp: Number
+}
+
+export {OrderTypes, OrderSide, OrderBuyReturn}
