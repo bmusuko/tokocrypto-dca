@@ -11,6 +11,10 @@ export class Telegram {
             try {
                 this.connection = new Telegraf(process.env.TELEGRAM_SECRET_TOKEN as string)
                 this.telegramUserId = process.env.TELEGRAM_USER_ID as string
+
+                this.connection.on('text', (ctx) =>  {
+                    ctx.reply('Hello World')
+                })
                 this.connection.launch()
 
 
