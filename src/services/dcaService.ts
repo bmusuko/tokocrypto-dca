@@ -3,6 +3,7 @@ dotenv.config()
 
 import {newOrderBuy} from "./tokocryptoService"
 import { DBConnection } from '../db/prisma'
+import { Telegram } from "../telegram/telegram";
 
 const buyCoinJob = async () => {
     const coins = (process.env.COINS as string).split(",")
@@ -27,6 +28,7 @@ const buyCoinJob = async () => {
                     orderId: order.data.orderId
                 }
             })
+            await Telegram.sendMessage(`Buy ${symbol} with ${amountToBuy} ${stableCoin}`)
         } catch (error) {
             console.log(error)
         }

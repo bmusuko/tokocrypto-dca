@@ -18,7 +18,7 @@ docker-compose up -d
 - [X] Order API
 - [X] DCA Order
 - [X] Scheduler (Agenda.js)
-- [ ] Save Transaction in DB
-- [ ] Report Transaction (via telegram)
+- [X] Save Transaction in DB
+- [X] Report Transaction (via telegram)
 - [ ] Rebalancing Algorithm for 2 coin (to keep coin percentage the - same in portofolio)
 - [ ] Support rebalancing for > 2 coin

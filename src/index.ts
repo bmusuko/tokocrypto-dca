@@ -4,6 +4,7 @@ dotenv.config()
 import { Agenda } from "agenda";
 import { buyCoinJob } from "./services/dcaService"
 import { DBConnection } from './db/prisma'
+import { Telegram } from "./telegram/telegram";
 
 const mongoConnectionString = process.env.MONGODB_URL as string;
 const BUY_COIN_JOB = "buy coin everyday"
@@ -19,7 +20,8 @@ agenda.define(BUY_COIN_JOB,
 });
 
 const main = async() => {
-    await DBConnection.init()
+    await DBConnection.init();
+    await Telegram.init();
     await agenda.start();
     await agenda.every('0 */6 * * *', BUY_COIN_JOB);
 }

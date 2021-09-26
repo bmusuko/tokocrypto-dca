@@ -15,7 +15,8 @@
     "agenda": "^4.2.1",
     "axios": "^0.21.4",
     "crypto": "^1.0.1",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "telegraf": "^4.4.2"
   },
   "devDependencies": {
     "@types/agenda": "^4.1.0",
