@@ -1,7 +1,7 @@
 import axios from "axios"
 import dotenv from "dotenv";
 import crypto from "crypto"
-import {OrderBuyReturn, OrderSide, OrderTypes} from "../types/TokocryptoTypes";
+import {GetBalanceReturn, OrderBuyReturn, OrderSide, OrderTypes} from "../types/TokocryptoTypes";
 
 dotenv.config()
 
@@ -14,11 +14,11 @@ axios.defaults.headers = {
     "Content-Type": "application/x-www-form-urlencoded"
 }
 
-const accountAssetInformation = async () => {
+const accountAssetInformation = async (coin: string): Promise<GetBalanceReturn | null> => {
 
     const API_URL = `${TOKOCRYPTO_API_BASE_URL}/open/v1/account/spot/asset`
     const params = new URLSearchParams({
-        asset: 'ETH', //gave the values directly for testing
+        asset: coin,
         timestamp: (new Date().getTime()).toString(),
         recvWindow: receiveWindow
     }).toString()
@@ -27,9 +27,10 @@ const accountAssetInformation = async () => {
 
     try {
         const res = await axios.get(`${API_URL}?${params.toString()}&signature=${signature}`)
-        console.log(res.data)
+        return res.data as GetBalanceReturn
     } catch (e) {
         console.log(e.message)
+        return null
     }
 }
 

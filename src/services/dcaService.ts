@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config()
 
-import {newOrderBuy} from "./tokocryptoService"
+import {accountAssetInformation, newOrderBuy} from "./tokocryptoService"
 import { DBConnection } from '../db/prisma'
 import { Telegram } from "../telegram/telegram";
 
@@ -36,6 +36,22 @@ const buyCoinJob = async () => {
     }
 }
 
+const balanceReminder = async () => {
+    const stableCoin = process.env.STABLE_COIN as string
+
+    const thresholdAmount = parseInt(process.env.THRESHOLD_BALANCE as string)
+    const stableCoinAmount = await accountAssetInformation(stableCoin)
+    if (stableCoinAmount == null) {
+        console.log("can't get coin amount")
+        return
+    }
+
+    if (stableCoinAmount.data.free < thresholdAmount) {
+        await Telegram.sendMessage(`You need to top up ${stableCoin}, current balance: ${stableCoinAmount.data.free}`)
+    }
+}
+
 export {
-    buyCoinJob
+    buyCoinJob,
+    balanceReminder
 }

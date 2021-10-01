@@ -14,13 +14,24 @@ enum OrderSide {
 }
 
 interface OrderBuyReturn {
-    code: Number,
+    code: number,
     msg: string,
     data: {
         orderId: number,
         createTime: number
     },
-    timestamp: Number
+    timestamp: number
 }
 
-export {OrderTypes, OrderSide, OrderBuyReturn}
+interface GetBalanceReturn {
+    code: number,
+    msg: string,
+    data: {
+        asset: string,
+        free: number,
+        locked: number
+    }
+}
+
+
+export {OrderTypes, OrderSide, OrderBuyReturn, GetBalanceReturn}

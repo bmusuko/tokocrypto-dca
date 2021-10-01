@@ -20,5 +20,6 @@ docker-compose up -d
 - [X] Scheduler (Agenda.js)
 - [X] Save Transaction in DB
 - [X] Report Transaction (via telegram)
+- [X] Report stable coin if less than threshold
 - [ ] Rebalancing Algorithm for 2 coin (to keep coin percentage the - same in portofolio)
 - [ ] Support rebalancing for > 2 coin
