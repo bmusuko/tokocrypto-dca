@@ -55,6 +55,9 @@ const buyCoinJob = async () => {
         }
         const symbol = `${coin}_${stableCoin}`
         console.log("buy",symbol,"with amount:", amountToBuy)
+        if (amountToBuy == 0) {
+            continue
+        }
         const order = await newOrderBuy(symbol, amountToBuy)
         if (order == null) {
             console.log("can't put the order")
@@ -72,9 +75,9 @@ const buyCoinJob = async () => {
                     symbol: symbol,
                     amount: amountToBuy,
                     orderId: order.data.orderId,
-                    amountSpent: orderDetail.executedQuoteQty,
-                    coinGet: orderDetail.executedQty,
-                    executedPrice: orderDetail.executedPrice
+                    amountSpent: parseFloat(orderDetail.executedQuoteQty),
+                    coinGet: parseFloat(orderDetail.executedQty),
+                    executedPrice: parseFloat(orderDetail.executedPrice)
 
                 }
             })
