@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config()
 
-import {accountAssetInformation, newOrderBuy} from "./tokocryptoService"
+import {accountAssetInformation, newOrderBuy, tickerPrice} from "./tokocryptoService"
 import { DBConnection } from '../db/prisma'
 import { Telegram } from "../telegram/telegram";
 
@@ -9,9 +9,50 @@ const buyCoinJob = async () => {
     const coins = (process.env.COINS as string).split(",")
     const amount = parseInt(process.env.DAILY_AMOUNT as string)
     const stableCoin = process.env.STABLE_COIN as string
+    const minimumAmount = 20000 // BIDR minimum to buy
+
+    const mapCoinAmountToBuy = new Map<string,number>();
+
+    const firstCoin = await accountAssetInformation(coins[0])
+    const secondCoin = await accountAssetInformation(coins[1])
+
+    if (firstCoin == null || secondCoin == null) {
+        console.log("can't get coin amount")
+        return
+    }
+
+    const firstCoinPrice = await tickerPrice(`${coins[0]}${stableCoin}`)
+    const secondCoinPrice = await tickerPrice(`${coins[1]}${stableCoin}`)
+    
+    if (firstCoinPrice == null || secondCoinPrice == null) {
+        console.log("can't get ticker price")
+        return
+    }
+
+    const firstCoinAmount  = firstCoin.data.free * firstCoinPrice.price
+    const secondCoinAmount = secondCoin.data.free * secondCoinPrice.price
+
+    if (firstCoinAmount + amount < secondCoinAmount) {
+        mapCoinAmountToBuy.set(coins[0], amount)
+        mapCoinAmountToBuy.set(coins[1], 0)
+    } else if (secondCoinAmount + amount < firstCoinAmount) {
+        mapCoinAmountToBuy.set(coins[0], 0)
+        mapCoinAmountToBuy.set(coins[1], amount)
+    } else { // buy both coin
+        if (firstCoinAmount < secondCoinAmount) {
+            mapCoinAmountToBuy.set(coins[0], amount - minimumAmount)
+            mapCoinAmountToBuy.set(coins[1], minimumAmount)
+        } else {
+            mapCoinAmountToBuy.set(coins[0], minimumAmount)
+            mapCoinAmountToBuy.set(coins[1], amount - minimumAmount)
+        }
+    }
 
     for (const coin of coins) {
-        const amountToBuy = Math.floor(amount * (1 / coins.length))
+        let amountToBuy = mapCoinAmountToBuy.get(coin)
+        if (amountToBuy == undefined) {
+            amountToBuy = minimumAmount
+        }
         const symbol = `${coin}_${stableCoin}`
         console.log("buy",symbol,"with amount:", amountToBuy)
         const order = await newOrderBuy(symbol, amountToBuy)
