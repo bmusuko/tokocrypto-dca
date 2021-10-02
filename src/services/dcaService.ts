@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config()
 
-import {accountAssetInformation, newOrderBuy, tickerPrice} from "./tokocryptoService"
+import {accountAssetInformation, getOrderBuy, newOrderBuy, tickerPrice} from "./tokocryptoService"
 import { DBConnection } from '../db/prisma'
 import { Telegram } from "../telegram/telegram";
 
@@ -60,13 +60,22 @@ const buyCoinJob = async () => {
             console.log("can't put the order")
             continue
         }
+        const orderDetail = await getOrderBuy(symbol, order.data.orderId)
+        if (orderDetail == null) {
+            console.log("can't get the order")
+            continue
+        }
         try {
             await DBConnection.conn.transaction.create({
                 data: {
                     msg: order.msg,
                     symbol: symbol,
                     amount: amountToBuy,
-                    orderId: order.data.orderId
+                    orderId: order.data.orderId,
+                    amountSpent: orderDetail.executedQuoteQty,
+                    coinGet: orderDetail.executedQty,
+                    executedPrice: orderDetail.executedPrice
+
                 }
             })
             await Telegram.sendMessage(`Buy ${symbol} with ${amountToBuy} ${stableCoin}`)

@@ -1,7 +1,11 @@
 import axios from "axios"
 import dotenv from "dotenv";
 import crypto from "crypto"
-import {GetBalanceReturn, OrderBuyReturn, OrderSide, OrderTypes, TickerPriceReturn} from "../types/TokocryptoTypes";
+import {
+    GetBalanceReturn, OrderBuyReturn, OrderSide, 
+    OrderTypes, TickerPriceReturn, OrderHistoryTypes, 
+    OrderHistoryDirectionTypes, OrderGetReturn
+} from "../types/TokocryptoTypes";
 
 dotenv.config()
 
@@ -70,12 +74,14 @@ const newOrderBuy  = async (symbol: string, quantity: number): Promise<OrderBuyR
     }
 }
 
-const getOrderBuy  = async (symbol: string) => {
+const getOrderBuy  = async (symbol: string, orderId: number) => {
     const API_URL = `${TOKOCRYPTO_API_BASE_URL}/open/v1/orders`
     const params = new URLSearchParams({
         symbol: symbol,
-        side: OrderSide.BUY,
         timestamp: (new Date().getTime()).toString(),
+        type: OrderHistoryTypes.HISTORY,
+        fromId: `${orderId}`,
+        direct: OrderHistoryDirectionTypes.PREVIOUS,
         recvWindow: receiveWindow
     }).toString()
 
@@ -84,7 +90,13 @@ const getOrderBuy  = async (symbol: string) => {
 
     try {
         const res = await axios.get(`${API_URL}?${querystring}`)
-        return res.data
+        const data = res.data as OrderGetReturn
+        const listitem = data.data.list.filter(order => {return order.symbol == symbol && order.orderId == orderId})
+        if (listitem.length == 1) {
+            return listitem[0]
+        } else {
+            return null
+        }
     } catch (e) {
         console.log(e.message)
         return null

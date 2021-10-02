@@ -31,7 +31,7 @@ const main = async() => {
     await Telegram.init();
     await agenda.start();
     await agenda.every('0 */6 * * *', BUY_COIN_JOB);
-    await agenda.every('0 * * * *', CHECK_BALANCE)
+    await agenda.every('0 * * * *', CHECK_BALANCE);
 }
 
 main().then(() => console.log("start service"))
