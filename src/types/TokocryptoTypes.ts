@@ -13,6 +13,17 @@ enum OrderSide {
     SELL = "1" 
 }
 
+enum OrderHistoryTypes {
+    OPEN = "1",
+    HISTORY = "2",
+    ALL = "-1" 
+}
+
+enum OrderHistoryDirectionTypes {
+    PREVIOUS = "prev",
+    NEXT = "next",
+}
+
 interface OrderBuyReturn {
     code: number,
     msg: string,
@@ -38,5 +49,37 @@ interface TickerPriceReturn {
     price: number
 }
 
+interface OrderGetReturn {
+    code: number,
+    msg: string,
+    data: {
+        list: OrderGetListItem[]
+    },
+    timestamp: number
+}
 
-export {OrderTypes, OrderSide, OrderBuyReturn, GetBalanceReturn, TickerPriceReturn}
+interface OrderGetListItem {
+    orderId: number,
+    symbol: string,
+    symbolType: number,
+    side: number,
+    type: number,
+    price: number,
+    origQty: number,
+    origQuoteQty: number,
+    executedQty: number,
+    executedPrice: number,
+    executedQuoteQty: number,
+    timeInForce: number,
+    stopPrice: number,
+    icebergQty: number,
+    status: number,
+    createTime: number,
+    clientId: string
+}
+
+export {
+    OrderTypes, OrderSide, OrderBuyReturn, 
+    GetBalanceReturn, TickerPriceReturn, OrderHistoryTypes, 
+    OrderHistoryDirectionTypes, OrderGetReturn, OrderGetListItem
+}
