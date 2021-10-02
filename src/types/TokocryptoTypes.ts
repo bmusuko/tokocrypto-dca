@@ -33,5 +33,10 @@ interface GetBalanceReturn {
     }
 }
 
+interface TickerPriceReturn {
+    symbol: string,
+    price: number
+}
 
-export {OrderTypes, OrderSide, OrderBuyReturn, GetBalanceReturn}
+
+export {OrderTypes, OrderSide, OrderBuyReturn, GetBalanceReturn, TickerPriceReturn}

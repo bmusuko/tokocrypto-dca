@@ -1,12 +1,12 @@
 import axios from "axios"
 import dotenv from "dotenv";
 import crypto from "crypto"
-import {GetBalanceReturn, OrderBuyReturn, OrderSide, OrderTypes} from "../types/TokocryptoTypes";
+import {GetBalanceReturn, OrderBuyReturn, OrderSide, OrderTypes, TickerPriceReturn} from "../types/TokocryptoTypes";
 
 dotenv.config()
 
 const TOKOCRYPTO_API_BASE_URL = "https://www.tokocrypto.com"
-// const BINANCE_API_BASE_URL = "https://api.binance.me"
+const BINANCE_API_BASE_URL = "https://api.binance.me"
 const receiveWindow = "5000"
 
 axios.defaults.headers = {
@@ -33,6 +33,19 @@ const accountAssetInformation = async (coin: string): Promise<GetBalanceReturn |
         return null
     }
 }
+
+const tickerPrice = async (symbol: String): Promise<TickerPriceReturn | null> => {
+    const API_URL = `${BINANCE_API_BASE_URL}/api/v3/ticker/price?symbol=${symbol}`
+
+    try {
+        const res = await axios.get(`${API_URL}`)
+        return res.data as TickerPriceReturn
+    } catch (e) {
+        console.log(e.message)
+        return null
+    }
+}
+
 
 const newOrderBuy  = async (symbol: string, quantity: number): Promise<OrderBuyReturn | null> => {
     const API_URL = `${TOKOCRYPTO_API_BASE_URL}/open/v1/orders`
@@ -81,5 +94,6 @@ const getOrderBuy  = async (symbol: string) => {
 export {
     accountAssetInformation,
     newOrderBuy,
-    getOrderBuy
+    getOrderBuy,
+    tickerPrice
 }
