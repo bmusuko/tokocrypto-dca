@@ -81,7 +81,7 @@ const buyCoinJob = async () => {
 
                 }
             })
-            await Telegram.sendMessage(`Buy ${symbol} with ${amountToBuy} ${stableCoin}`)
+            await Telegram.sendMessage(`Buy ${symbol} with ${orderDetail.executedQuoteQty} ${stableCoin}`)
         } catch (error) {
             console.log(error)
         }
