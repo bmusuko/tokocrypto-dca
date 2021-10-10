@@ -1,0 +1,20 @@
+name: remote ssh command
+on: 
+  push:
+    - 'master'
+
+jobs:
+  build:
+    name: Rebuild Image
+    runs-on: ubuntu-latest
+    steps:
+    - name: rebuild docker and rerun service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          whoami
+          ls -lah
