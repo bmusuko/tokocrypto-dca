@@ -1,7 +1,9 @@
-name: remote ssh command
+name: Deployment
+
 on: 
   push:
-    - 'master'
+    branches:
+      - 'master'
 
 jobs:
   build:
