@@ -19,5 +19,8 @@ jobs:
         port: ${{ secrets.PORT }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          whoami
-          ls -lah
+          cd /github/tokocrypto-dca
+          git pull origin master
+          docker-compose build
+          docker-compose down
+          docker-compose up -d
