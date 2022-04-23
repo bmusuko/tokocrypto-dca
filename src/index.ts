@@ -19,19 +19,19 @@ agenda.define(BUY_COIN_JOB,
     async (_: any) => {
         console.log("execute buying");
         await buyCoinJob();
-});
+    });
 
-agenda.define(CHECK_BALANCE, 
-    async (_:any) =>{
+agenda.define(CHECK_BALANCE,
+    async (_: any) => {
         await balanceReminder();
-})
+    })
 
-const main = async() => {
+const main = async () => {
     await DBConnection.init();
     await Telegram.init();
     await agenda.start();
-    await agenda.every('0 0,5,10,15,20 * * *', BUY_COIN_JOB);
-    await agenda.every('0 * * * *', CHECK_BALANCE);
+    await agenda.every(process.env.BUY_COIN_CRON as string, BUY_COIN_JOB);
+    await agenda.every(process.env.CHECK_BALANCE_CRON as string, CHECK_BALANCE);
 }
 
 main().then(() => console.log("start service"))
