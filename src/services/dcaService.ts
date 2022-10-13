@@ -4,6 +4,7 @@ dotenv.config()
 import { accountAssetInformation, getOrderBuy, newOrderBuy, tickerPrice } from "./tokocryptoService"
 import { DBConnection } from '../db/prisma'
 import { Telegram } from "../telegram/telegram";
+import { formatCurrency } from "../utils/currencyFormatter";
 
 const buyCoinJob = async () => {
     const coins = (process.env.COINS as string).split(",")
@@ -74,7 +75,7 @@ const buyCoinJob = async () => {
 
                 }
             })
-            await Telegram.sendMessage(`Buy ${symbol} with ${orderDetail.executedQuoteQty} ${stableCoin}`)
+            await Telegram.sendMessage(`Buy ${symbol} with ${formatCurrency(parseInt(orderDetail.executedQuoteQty))} ${stableCoin}`)
         } catch (error) {
             console.log(error)
         }
@@ -93,7 +94,7 @@ const balanceReminder = async () => {
     }
 
     if (stableCoinAmount.data.free < thresholdAmount) {
-        await Telegram.sendMessage(`You need to top up ${stableCoin}, current balance: ${stableCoinAmount.data.free}`)
+        await Telegram.sendMessage(`You need to top up ${stableCoin}, current balance: ${formatCurrency(stableCoinAmount.data.free)}`)
     }
 }
 
